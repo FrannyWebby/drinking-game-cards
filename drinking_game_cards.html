@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drinking Game Cards</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .instructions {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .card-stack {
+            position: relative;
+            width: 200px;
+            height: 300px;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backface-visibility: hidden;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.hidden {
+            transform: rotateY(180deg);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .card-question {
+            font-size: 1.1em;
+        }
+
+        .card-stack .card:last-child {
+            z-index: 10;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const stack = document.querySelector(".card-stack");
+            let cards = Array.from(stack.children);
+
+            const shuffleCards = () => {
+                cards.sort(() => Math.random() - 0.5);
+                stack.innerHTML = "";
+                cards.forEach((card, index) => {
+                    card.style.transform = `translateY(${index * 5}px)`;
+                    stack.appendChild(card);
+                });
+            };
+
+            cards.forEach((card, index) => {
+                card.style.transform = `translateY(${index * 5}px)`;
+            });
+
+            stack.addEventListener("click", () => {
+                const topCard = cards.pop();
+                if (topCard) {
+                    topCard.classList.add("hidden");
+                    setTimeout(() => {
+                        topCard.remove();
+                        if (cards.length === 0) {
+                            cards = Array.from(document.querySelectorAll(".card"));
+                            shuffleCards();
+                        } else {
+                            cards.forEach((card, index) => {
+                                card.style.transform = `translateY(${index * 5}px)`;
+                            });
+                        }
+                    }, 500);
+                }
+            });
+
+            shuffleCards();
+        });
+    </script>
+</head>
+<body>
+
+    <div class="instructions">
+        <h1>Drinking Game Instructions</h1>
+        <p>Click the card stack to reveal the top card. Answer honestly or take a drink! When the last card is used, the deck is reshuffled.</p>
+    </div>
+
+    <div class="card-stack">
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the most embarrassing thing you’ve ever said in public?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">Who in this group would you trust the least with a big secret?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s a belief you have that most people here would disagree with?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">Have you ever betrayed a friend? If yes, how?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the biggest lie you’ve ever told your parents?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the pettiest reason you’ve ever stopped talking to someone?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the worst advice you’ve ever given someone?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the most irresponsible thing you’ve done recently?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s a talent you pretend to have but really don’t?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">Who in this group would you trade lives with and why?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the worst thing you’ve said about someone in this group?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s the last thing you Googled that you’d be embarrassed to share?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">Have you ever taken credit for someone else’s work? What was it?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s your biggest regret from the past year?</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-question">What’s something you’ve done that you’d never admit to your family?</div>
+        </div>
+    </div>
+
+</body>
+</html>
