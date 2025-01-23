@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drinking Game Cards</title>
+    <title>Let's Get Shitfaced</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -26,8 +26,8 @@
 
         .card-stack {
             position: relative;
-            width: 200px;
-            height: 300px;
+            width: 300px; /* More card-like dimensions */
+            height: 420px;
         }
 
         .card {
@@ -41,35 +41,63 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             text-align: center;
             padding: 20px;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            backface-visibility: hidden;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.6s, opacity 0.3s;
         }
 
         .card.hidden {
-            transform: rotateY(180deg);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(50px);
+        }
+
+        .card.show-shots {
+            transform: translateY(0) scale(1.05);
         }
 
         .card-title {
-            font-size: 1.5em;
+            font-size: 1.8em;
             margin-bottom: 15px;
             font-weight: bold;
         }
 
         .card-question {
-            font-size: 1.1em;
+            font-size: 1.4em;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .card-shots {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin-top: auto; /* Align to the bottom of the card */
+            display: none;
         }
 
         .card-stack .card:last-child {
             z-index: 10;
+        }
+
+        @keyframes shuffle-animation {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(-20px); }
+            50% { transform: translateY(20px); }
+            75% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes next-card-animation {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(50px); opacity: 0; }
+        }
+
+        @keyframes reveal-shots-animation {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
     </style>
     <script>
@@ -86,26 +114,32 @@
                 });
             };
 
+            const handleCardClick = (card) => {
+                if (!card.classList.contains("show-shots")) {
+                    // Reveal the shots counter
+                    card.querySelector(".card-shots").style.display = "block";
+                    if (card.classList.contains("joker-card")) {
+                        card.querySelector(".card-shots").textContent = "Everyone drinks 2 shots!";
+                    } else {
+                        const shots = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
+                        card.querySelector(".card-shots").textContent = `${shots} shots!`;
+                    }
+                    card.classList.add("show-shots");
+                } else {
+                    // Move to the next card
+                    card.classList.add("hidden");
+                    cards.pop();
+
+                    if (cards.length === 0) {
+                        cards = Array.from(document.querySelectorAll(".card"));
+                        shuffleCards();
+                    }
+                }
+            };
+
             cards.forEach((card, index) => {
                 card.style.transform = `translateY(${index * 5}px)`;
-            });
-
-            stack.addEventListener("click", () => {
-                const topCard = cards.pop();
-                if (topCard) {
-                    topCard.classList.add("hidden");
-                    setTimeout(() => {
-                        topCard.remove();
-                        if (cards.length === 0) {
-                            cards = Array.from(document.querySelectorAll(".card"));
-                            shuffleCards();
-                        } else {
-                            cards.forEach((card, index) => {
-                                card.style.transform = `translateY(${index * 5}px)`;
-                            });
-                        }
-                    }, 500);
-                }
+                card.addEventListener("click", () => handleCardClick(card));
             });
 
             shuffleCards();
@@ -115,72 +149,56 @@
 <body>
 
     <div class="instructions">
-        <h1>Drinking Game Instructions</h1>
-        <p>Click the card stack to reveal the top card. Answer honestly or take a drink! When the last card is used, the deck is reshuffled.</p>
+        <h1>Let's Get Shitfaced</h1>
+        <p>Click the card to reveal the question. Click again to reveal the shots. Click once more to move to the next card. When the last card is used, the deck is reshuffled.</p>
     </div>
 
     <div class="card-stack">
         <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-title">Let’s Get Shitfaced</div>
+            <div class="card-question">What’s the weirdest food combination you secretly enjoy?</div>
+            <div class="card-shots"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Let’s Get Shitfaced</div>
+            <div class="card-question">If you could live in any fictional universe, which one would it be?</div>
+            <div class="card-shots"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Let’s Get Shitfaced</div>
+            <div class="card-question">What’s the most ridiculous thing you’ve done to impress someone?</div>
+            <div class="card-shots"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Let’s Get Shitfaced</div>
+            <div class="card-question">What’s one skill you wish you could learn instantly?</div>
+            <div class="card-shots"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Let’s Get Shitfaced</div>
+            <div class="card-question">Who in this group do you think has the best sense of humor?</div>
+            <div class="card-shots"></div>
+        </div>
+        <div class="card joker-card">
+            <div class="card-title">JOKER CARD</div>
+            <div class="card-question">Everyone drinks 2 shots!</div>
+            <div class="card-shots"></div>
+        </div>
+        <div class="card">
+            <div class="card-title">Let’s Get Shitfaced</div>
             <div class="card-question">What’s the most embarrassing thing you’ve ever said in public?</div>
+            <div class="card-shots"></div>
         </div>
         <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-title">Let’s Get Shitfaced</div>
             <div class="card-question">Who in this group would you trust the least with a big secret?</div>
+            <div class="card-shots"></div>
         </div>
         <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
+            <div class="card-title">Let’s Get Shitfaced</div>
             <div class="card-question">What’s a belief you have that most people here would disagree with?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">Have you ever betrayed a friend? If yes, how?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s the biggest lie you’ve ever told your parents?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s the pettiest reason you’ve ever stopped talking to someone?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s the worst advice you’ve ever given someone?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s the most irresponsible thing you’ve done recently?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s a talent you pretend to have but really don’t?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">Who in this group would you trade lives with and why?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s the worst thing you’ve said about someone in this group?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s the last thing you Googled that you’d be embarrassed to share?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">Have you ever taken credit for someone else’s work? What was it?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s your biggest regret from the past year?</div>
-        </div>
-        <div class="card">
-            <div class="card-title">Uncomfortable Question</div>
-            <div class="card-question">What’s something you’ve done that you’d never admit to your family?</div>
+            <div class="card-shots"></div>
         </div>
     </div>
-
 </body>
 </html>
